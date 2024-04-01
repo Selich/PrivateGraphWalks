@@ -30,3 +30,31 @@ def drw_sampler(G, L):
         subgraphs.append(subgraph_nx)
     
     return subgraphs
+
+
+def drw_r_sampler(G, L, R):
+    remaining_nodes = set(G.nodes())
+    subgraphs = []
+    
+    while remaining_nodes:
+        subgraph = []
+        root = random.sample(remaining_nodes, 1)[0]
+        subgraph.append(root)
+        remaining_nodes.remove(root)
+        
+        for r in range(R):
+            v = root
+            l = 0
+            while l < L:
+                valid_neighbors = [u for u in G.neighbors(v) if u in remaining_nodes]
+                if not valid_neighbors:
+                    break
+                v = random.sample(valid_neighbors, 1)[0]
+                subgraph.append(v)
+                remaining_nodes.remove(v)
+                l += 1
+            subgraphs.append(subgraph)
+    
+    subgraph_nx = [G.subgraph(sg) for sg in subgraphs]
+    
+    return subgraph_nx
