@@ -32,37 +32,21 @@ def main():
 
 
     train_disjoint_subgraphs, test_disjoint_subgraphs = split_train_test_subgraphs(G_cora, walk_length)
-    train_disjoint_subgraphs_arws, test_disjoint_subgraphs_arws = split_train_test_subgraphs_arws(G_cora, walk_length)
 
     model_non_dp = GCN(nfeat=nfeat, nhid=16, nclass=nclass)
     model_dp = GCN(nfeat=nfeat, nhid=16, nclass=nclass)
 
-    model_non_dp_arws = GCN(nfeat=nfeat, nhid=16, nclass=nclass)
-    model_dp_arws = GCN(nfeat=nfeat, nhid=16, nclass=nclass)
-
     optimizer_non_dp = torch.optim.Adam(model_non_dp.parameters(), lr=0.01)
     optimizer_dp = torch.optim.Adam(model_dp.parameters(), lr=0.01)
-
-    optimizer_non_dp_arws = torch.optim.Adam(model_non_dp.parameters(), lr=0.01)
-    optimizer_dp_arws = torch.optim.Adam(model_dp.parameters(), lr=0.01)
 
     train(model_non_dp, train_disjoint_subgraphs, optimizer_non_dp)
     train(model_dp, train_disjoint_subgraphs, optimizer_dp)
 
-    train(model_non_dp_arws, train_disjoint_subgraphs_arws, optimizer_non_dp_arws)
-    train(model_dp_arws, train_disjoint_subgraphs_arws, optimizer_dp_arws)
-
     f1_non_dp = evaluate_model(model_non_dp, test_disjoint_subgraphs)
     f1_dp = evaluate_model(model_dp, test_disjoint_subgraphs)
-    
-    f1_non_dp_arws = evaluate_model(model_non_dp_arws, test_disjoint_subgraphs_arws)
-    f1_dp_arws = evaluate_model(model_dp_arws, test_disjoint_subgraphs_arws)
 
     print(f"Non-DP Model - F1 Micro Score: {f1_non_dp}")
     print(f"DP Model - F1 Micro Score: {f1_dp}")
-
-    print(f"ARWS Non-DP Model - F1 Micro Score: {f1_non_dp_arws}")
-    print(f"ARWS DP Model - F1 Micro Score: {f1_dp_arws}")
 
 if __name__ == "__main__":
     main()
