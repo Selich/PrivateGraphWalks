@@ -1,4 +1,5 @@
 import torch
+import networkx as nx
 import torch.nn as nn
 import torch.nn.functional as F
 from utils.data_utils import prepare_subgraph_data
@@ -37,6 +38,7 @@ def train(model, disjoint_subgraphs, optimizer):
     
     for sg in disjoint_subgraphs:
         optimizer.zero_grad()
+
         
         features, adj, labels = prepare_subgraph_data(sg)
         
@@ -56,6 +58,7 @@ def train_with_dp(model, disjoint_subgraphs, optimizer, max_grad_norm, noise_mul
     total_loss = 0
     
     for sg in disjoint_subgraphs:
+        assert isinstance(sg, nx.Graph), "sg should be a networkx Graph object"
         features, adj, labels = prepare_subgraph_data(sg)
         loss = dp_sgd_step(model, optimizer, features, adj, labels, max_grad_norm, noise_multiplier)
         total_loss += loss
